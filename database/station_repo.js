@@ -25,6 +25,28 @@ class StationRepo {
         return this.dbc.all(`SELECT * FROM CartStation`)
     }
 
+    getById(id) {
+        return this.dbc.get(
+            `SELECT * FROM CartStation WHERE ID = ?`,
+            [id])
+    }
+
+    update(action){
+        if (action == "inc") {
+            return this.dbc.run(
+                `UPDATE CartStation SET CurrentState = ?`,
+                [this.dbc.currentState + 1])
+        }
+        
+        else if(action = "dec") {
+            return this.dbc.run(
+                `UPDATE CartStation SET CurrentState = ?`,
+                [this.dbc.currentState - 1])
+            
+        }
+        
+    }
+
 
 }
 

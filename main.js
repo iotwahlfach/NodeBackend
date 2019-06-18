@@ -25,20 +25,6 @@ qrCodeRepo.createTable().then(
       console.log("Database setup successfully");
 
 
-
-      // 2 Examples 1 GET and 1 POST
-      // This responds with "Hello World" on the homepage
-      app.get('/', function (req, res) {
-         console.log("Got a GET request for the homepage");
-         res.send('Hello GET');
-      })
-
-      // This responds a POST request for the homepage
-      app.post('/', function (req, res) {
-         console.log("Got a POST request for the homepage");
-         res.send('Hello POST');
-      })
-
       //Real strings or our IoT Hackathon use.
 
       app.get('/v1/cart', function (req, res) {
@@ -171,7 +157,18 @@ qrCodeRepo.createTable().then(
 
 
 
+      app.put('/v1/cart/:action', function (req, res) {
 
+         console.log(req.body.StationID)
+         stationRepo.getById(req.body.StationID).then(
+            station => {
+               console.log(station)
+               station.update(req.params.action)
+            })
+
+
+
+      })
 
 
 
@@ -183,28 +180,6 @@ qrCodeRepo.createTable().then(
 
          console.log("Example app listening at http://%s:%s", host, port)
       })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
