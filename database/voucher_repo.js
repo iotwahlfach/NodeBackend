@@ -8,9 +8,16 @@ class VoucherRepo {
       CREATE TABLE IF NOT EXISTS "Voucher" (
         "VoucherID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             "Name"	TEXT,
-            "Description"	INTEGER)`
+            "Description"	TEXT)`
 
         return this.dbc.run(sql)
+    }
+
+    create(name, decription) {
+        return this.dbc.run(
+            `INSERT INTO Voucher (Name, Description)
+            VALUES (?, ?)`,
+            [name, decription])
     }
 }
 

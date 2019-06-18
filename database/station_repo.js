@@ -13,6 +13,15 @@ class StationRepo {
             )`
         return this.dbc.run(sql)
     }
+
+    create(name, targetState, currentState) {
+        return this.dbc.run(
+            `INSERT INTO CartStation (Name, TargetState, CurrentState)
+            VALUES (?, ?, ?)`,
+            [name, targetState, currentState])
+    }
+
+
 }
 
 module.exports = StationRepo;  
