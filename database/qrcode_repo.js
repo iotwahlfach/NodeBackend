@@ -5,9 +5,16 @@ class QrCodeRepo {
 
     createTable() {
         const sql = `
-      CREATE TABLE IF NOT EXISTS projects (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT)`
+      CREATE TABLE IF NOT EXISTS "QrCode" (
+          "ID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          "VoucherID"	INTEGER,
+          "Daytime-Active"	INTEGER,
+          "Daytime-Pending"	INTEGER,
+          "Daytime-Over"	INTEGER,
+          "StationID"	INTEGER,
+          "Status"	INTEGER
+    )`
+        
         return this.dbc.run(sql)
     }
 
