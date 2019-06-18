@@ -54,7 +54,7 @@ class QrCodeRepo {
     }
 
     getAll() {
-        return this.dao.all(`SELECT * FROM QRCode`)
+        return this.dbc.all(`SELECT * FROM QRCode`)
     }
 }
 
