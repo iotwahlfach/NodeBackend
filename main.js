@@ -5,6 +5,8 @@ const VoucherRepo = require('./database/voucher_repo');
 var express = require('express');
 var app = express();
 
+var bodyParser = require('body-parser')
+app.use(bodyParser.json())
 
 const database = new DatabaseConnector('./database/IoTDB2.db')
 const qrCodeRepo = new QrCodeRepo(database);
@@ -20,7 +22,6 @@ qrCodeRepo.createTable().then(
       // voucherRepo.create("Fleischgutschein", "10% Rabatt beim nächsten Einkauf bei der Fleischtheke")
       // voucherRepo.create("Obstgutschein", "10% Rabatt beim nächsten Einkauf bei der Obsttheke")
       // voucherRepo.create("Gemüsegutschein", "10% Rabatt beim nächsten Einkauf bei der Gemüstheke")
-
       console.log("Database setup successfully");
 
 
@@ -97,6 +98,74 @@ qrCodeRepo.createTable().then(
 
 
          res.send('All Information of Action')
+      })
+
+      app.post('/v1/qrcode', function (req, res) {
+         console.log(req.body)
+         var stationId = req.body.stationId;
+         voucherRepo.getAll().then(
+            (data) => {
+               console.log(data)
+               var length = Object.keys(data).length
+               var randomVoucherId = Math.floor(Math.random() * length + 1);
+               console.log("Random number: " + randomVoucherId)
+               qrCodeRepo.create(randomVoucherId, stationId).then(
+                  (data) => {
+                     console.log(data)
+                  }
+               )
+            }
+         )
+         res.send("o");
+      });
+
+      app.put('/v1/qrcode', function (req, res) {
+         console.log(req.body);
+         var qrCodeId = req.body.qrCodeId;
+         var status = req.body.status;
+         var stationId = req.body.stationId;
+         qrCodeRepo.getById(qrCodeId).then(
+            data => {
+               console.log(data)
+               if (!data) {
+                  res.status(401).json({
+                     result: "Fehlgeschlagen",
+                     message: "QR Code existiert nicht!"
+                  })
+                  return;
+               }
+               if (data.stationId != stationId) {
+                  res.status(404).json({
+                     result: "Fehlgeschlagen",
+                     message: "QR Code ist nicht auf diese Station registriert!"
+                  })
+               }
+               qrCodeRepo.update(qrCodeId, status).then(
+                  (data) => {
+
+                     res.status(200).json({
+                        result: "Erfolgreich",
+                        message: "QR Code wurde erfolgreich aktiviert!"
+                     })
+                  }
+               ).catch(
+                  (err) => {
+                     console.log(err);
+                     res.status(500).json({
+                        result: "Fehlgeschlagen",
+                        message: "Ein interner Fehler ist aufgetreten!"
+                     })
+                  }
+               )
+            }
+         ).catch(
+            (err) => {
+               res.status(500).json({
+                  result: "Fehlgeschlagen",
+                  message: "Ein interner Fehler ist aufgetreten!"
+               })
+            }
+         )
       })
 
 

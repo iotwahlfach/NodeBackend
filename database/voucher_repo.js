@@ -19,6 +19,13 @@ class VoucherRepo {
             VALUES (?, ?)`,
             [name, decription])
     }
+
+
+    getAll() {
+        return this.dbc.all(`SELECT * FROM Voucher`)
+    }
+
+
 }
 
 module.exports = VoucherRepo;  
