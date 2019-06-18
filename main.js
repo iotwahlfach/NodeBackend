@@ -17,14 +17,14 @@ app.post('/', function (req, res) {
 
 //Real strings or our IoT Hackathon use.
 
-app.get('/v1/cart',function(req,res) {
-	console.log("Got a GET request for CARTS");
-	res.send('All Information of Carts')
+app.get('/v1/cart', function (req, res) {
+   console.log("Got a GET request for CARTS");
+   res.send('All Information of Carts')
 })
 
-app.get('/v1/action',function(req,res) {
-	console.log("Got a GET request for Action");
-	res.send('All Information of Action')
+app.get('/v1/action', function (req, res) {
+   console.log("Got a GET request for Action");
+   res.send('All Information of Action')
 })
 
 
@@ -39,6 +39,6 @@ app.get('/v1/action',function(req,res) {
 var server = app.listen(8081, function () {
    var host = server.address().address
    var port = server.address().port
-   
+
    console.log("Example app listening at http://%s:%s", host, port)
 })
