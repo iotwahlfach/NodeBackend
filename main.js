@@ -1,5 +1,17 @@
+const DatabaseConnector = require('./database/database_connector')
+const QrCodeRepo = require('./database/qrcode_repo')
 var express = require('express');
 var app = express();
+
+
+const database = new DatabaseConnector('./database/IoTDB.db')
+const qrCodeRepo = new QrCodeRepo(database);
+qrCodeRepo.createTable().then(
+   () => {
+      console.log("Test")
+   }
+)
+
 
 
 // 2 Examples 1 GET and 1 POST
