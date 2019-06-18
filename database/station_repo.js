@@ -21,6 +21,10 @@ class StationRepo {
             [name, targetState, currentState])
     }
 
+    getAll() {
+        return this.dbc.all(`SELECT * FROM CartStation`)
+    }
+
 
 }
 

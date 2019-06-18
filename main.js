@@ -48,6 +48,55 @@ qrCodeRepo.createTable().then(
 
       app.get('/v1/action', function (req, res) {
          console.log("Got a GET request for Action");
+
+         stationRepo.getAll().then((stations) => {
+            console.log(stations);
+            var resPlayload = {
+               result: 0
+            }
+            stations.forEach((station) => {
+               var diff = station.TargetState - station.CurrentState;
+               if(Math.abs(diff) < 5) {
+                  
+               } else if(diff <= -5) {
+                  resPlayload = {
+                     result: 1,
+                     stationId: station.ID,
+                     stationName: station.Name,
+                     type: 0
+                  }
+               } else {
+                  resPlayload = {
+                     result: 1,
+                     stationId: station.ID,
+                     stationName: station.Name,
+                     type: 1
+                  }
+               }
+            })
+            console.log(resPlayload);
+            res.status(200).json(resPlayload)
+
+
+
+
+   
+          })
+
+
+//
+//         var JSON_response = {
+//            'result' : ,
+//            'station' : ,
+//            'stationName' : ,
+//            'type' : 0,
+
+        // }
+
+         
+
+
+
          res.send('All Information of Action')
       })
 
