@@ -46,9 +46,9 @@ qrCodeRepo.createTable().then(
          res.send('All Information of Carts')
       })
 
-      app.get('/v1/action', function (req, res) {
+      app.get('/v1/action/:device', function (req, res) {
          console.log("Got a GET request for Action");
-
+         var device = req.params.device;
          stationRepo.getAll().then((stations) => {
             console.log(stations);
             var resPlayload = {
@@ -56,48 +56,32 @@ qrCodeRepo.createTable().then(
             }
             stations.forEach((station) => {
                var diff = station.TargetState - station.CurrentState;
-               if(Math.abs(diff) < 5) {
-                  
-               } else if(diff <= -5) {
+               if (Math.abs(diff) < 5) {
+
+               } else if (diff <= -5 && device == "smartphone") {
                   resPlayload = {
                      result: 1,
                      stationId: station.ID,
                      stationName: station.Name,
-                     type: 0
                   }
-               } else {
+               } else if (device == "kasse") {
                   resPlayload = {
-                     result: 1,
+                     result: 2,
                      stationId: station.ID,
                      stationName: station.Name,
-                     type: 1
                   }
                }
             })
             console.log(resPlayload);
-            res.status(200).json(resPlayload)
+            res.status(200).json(resPlayload);
+
+         }).catch(
+            (err) => {
+               console.log(err);
+            }
+         )
 
 
-
-
-   
-          })
-
-
-//
-//         var JSON_response = {
-//            'result' : ,
-//            'station' : ,
-//            'stationName' : ,
-//            'type' : 0,
-
-        // }
-
-         
-
-
-
-         res.send('All Information of Action')
       })
 
       app.post('/v1/qrcode', function (req, res) {
@@ -108,15 +92,31 @@ qrCodeRepo.createTable().then(
                console.log(data)
                var length = Object.keys(data).length
                var randomVoucherId = Math.floor(Math.random() * length + 1);
+               var voucherName;
+               var voucherDesc;
+               data.forEach((voucher) => {
+                  if (voucher.VoucherID == randomVoucherId) {
+                     voucherName = voucher.Name;
+
+                     voucherDesc = voucher.Description;
+                  }
+               });
                console.log("Random number: " + randomVoucherId)
                qrCodeRepo.create(randomVoucherId, stationId).then(
                   (data) => {
-                     console.log(data)
+                     console.log(data.id)
+                     res.status(200).json({
+                        result: "Erfolgreich",
+                        id: data.id,
+                        voucherName: voucherName,
+                        voucherDesc: voucherDesc,
+                        isActive: 0
+                     })
+                     return;
                   }
                )
             }
          )
-         res.send("o");
       });
 
       app.put('/v1/qrcode', function (req, res) {
@@ -177,7 +177,7 @@ qrCodeRepo.createTable().then(
 
 
 
-      var server = app.listen(8081, function () {
+      var server = app.listen(8082, function () {
          var host = server.address().address
          var port = server.address().port
 
