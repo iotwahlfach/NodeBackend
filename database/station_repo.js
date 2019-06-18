@@ -5,9 +5,12 @@ class StationRepo {
 
     createTable() {
         const sql = `
-      CREATE TABLE IF NOT EXISTS projects (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT)`
+      CREATE TABLE IF NOT EXISTS "CartStation" (
+        "ID"	INTEGER PRIMARY KEY AUTOINCREMENT,
+            "Name"	TEXT,
+            "TargetState"	NUMERIC,
+            "CurrentState"	NUMERIC
+            )`
         return this.dbc.run(sql)
     }
 }

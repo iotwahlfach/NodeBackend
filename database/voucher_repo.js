@@ -5,9 +5,11 @@ class VoucherRepo {
 
     createTable() {
         const sql = `
-      CREATE TABLE IF NOT EXISTS projects (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT)`
+      CREATE TABLE IF NOT EXISTS "Voucher" (
+        "VoucherID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            "Name"	TEXT,
+            "Description"	INTEGER)`
+
         return this.dbc.run(sql)
     }
 }
