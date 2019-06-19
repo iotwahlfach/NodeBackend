@@ -7,7 +7,7 @@ var app = express();
 
 var bodyParser = require('body-parser')
 app.use(bodyParser.json())
-
+app.use(bodyParser.urlencoded({ extended: false }))
 const database = new DatabaseConnector('./database/IoTDB2.db')
 const qrCodeRepo = new QrCodeRepo(database);
 const stationRepo = new StationRepo(database);
@@ -73,6 +73,8 @@ qrCodeRepo.createTable().then(
       app.post('/v1/qrcode', function (req, res) {
          console.log(req.body)
          var stationId = req.body.stationId;
+         console.log("station id")
+         console.log(stationId);
          voucherRepo.getAll().then(
             (data) => {
                console.log(data)
@@ -110,6 +112,7 @@ qrCodeRepo.createTable().then(
          var qrCodeId = req.body.qrCodeId;
          var status = req.body.status;
          var stationId = req.body.stationId;
+         console.log(stationId)
          qrCodeRepo.getById(qrCodeId).then(
             data => {
                console.log(data)
@@ -154,16 +157,52 @@ qrCodeRepo.createTable().then(
          )
       })
 
+      app.get("/v1/qrcode/:id", function (req, res) {
+         console.log(req.params.id);
+         qrCodeRepo.getById(req.params.id).then(
+            data => {
+               console.log(data);
+               if (!data) {
+                  res.status(404).json({
+                     message: "Qr Code existiert nicht"
+                  })
+                  return;
+               }
+               res.status(200).json({
+                  qrCodeId: data.ID,
+                  qrCodeStatus: data.Status
+               })
+            }
+         )
+      });
+
 
 
 
       app.put('/v1/cart/:action', function (req, res) {
 
-         console.log(req.body.StationID)
-         stationRepo.getById(req.body.StationID).then(
+         console.log(req.body.stationId)
+         stationRepo.getById(req.body.stationId).then(
             station => {
-               console.log(station)
-               station.update(req.params.action)
+               if (req.params.action == "dec") {
+                  station.CurrentState -= 1;
+               } else {
+                  station.CurrentState += 1;
+               }
+
+               stationRepo.update(station.ID, station.CurrentState).then(
+                  (data) => {
+                     res.status(200).json({
+                        result: "success"
+                     })
+                  }
+               ).catch(
+                  (err) => {
+                     res.status(404).json({
+                        result: "failed"
+                     })
+                  }
+               )
             })
 
 

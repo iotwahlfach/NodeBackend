@@ -19,6 +19,7 @@ class QrCodeRepo {
     }
 
     create(voucherId, stationId) {
+        console.log("create")
         console.log(voucherId);
         console.log(stationId)
         var datetime = Date.now();

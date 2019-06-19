@@ -31,23 +31,12 @@ class StationRepo {
             [id])
     }
 
-    update(action){
-        if (action == "inc") {
-            return this.dbc.run(
-                `UPDATE CartStation SET CurrentState = ?`,
-                [this.dbc.currentState + 1])
-        }
-        
-        else if(action = "dec") {
-            return this.dbc.run(
-                `UPDATE CartStation SET CurrentState = ?`,
-                [this.dbc.currentState - 1])
-            
-        }
-        
+    update(id, currentState) {
+        return this.dbc.run(
+            `UPDATE CartStation SET CurrentState = ? WHERE id = ?`,
+            [currentState, id])
     }
 
 
 }
-
 module.exports = StationRepo;  
